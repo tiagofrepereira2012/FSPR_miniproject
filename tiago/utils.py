@@ -12,6 +12,44 @@ import struct
 import gzip
 import matplotlib.pyplot as mpl
 
+
+def euclidean_distance(p, q):
+  return numpy.sqrt(numpy.sum((p-q)**2))
+
+
+def cosine_similarity(p, q):
+  """Calculates the cosine similarity between to data vectors 'p' and 'q'.
+
+  The cosine similarity between two vectors is defined as the cosine of the
+  angle between these two vectors. This measure is therefore invariant to 'p'
+  and 'q''s norms.
+
+  N.B.: max(cos(x)) = 1, when x = 0 radians. So, similarity and distance play
+  inverse roles for classification.
+
+  You can calculate the cosine of the angle between two vectors, by dividing
+  the dot-product of the two vectors by their multiplied L2-norms.
+
+  s(p,q) = p q / |p||q|
+
+  Where
+
+  |p| = sqrt ( sum (p_i^2) )
+
+  Tip: You can use ``numpy.linalg.norm`` to compute the normalization factors
+  """
+
+  p_norm = numpy.sqrt(numpy.sum(p**2))
+  q_norm = numpy.sqrt(numpy.sum(q**2))
+
+  return numpy.dot(p,q) / (p_norm * q_norm)
+
+
+
+def CER(original_labels, predicted_label):
+  return sum( original_labels != predicted_label ) / float(predicted_label.shape[0])
+
+
 def check_gradient(machine):
   """Runs a simple gradient checking procedure on the MLP machine
 

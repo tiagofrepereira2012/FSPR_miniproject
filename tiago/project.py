@@ -18,7 +18,7 @@ import scipy.optimize
 class Machine:
   """Represents a Multi-Layer Perceptron Machine"""
 
-  def __init__(self, nhidden=2, regularization=0):
+  def __init__(self, nhidden=2, regularization=0, input_dim=28*28):
     """Initializes the MLP with a number of inputs and outputs. Weights are
     initialized randomly with the specified seed.
 
@@ -39,7 +39,10 @@ class Machine:
     # In doubt, run the maths yourself.
     # z1 = w1^T * X
     # z2 = w2^T * a1
-    self.w1 = numpy.random.rand((28*28)+1, nhidden)
+
+    self.w1 = numpy.random.rand(input_dim+1, nhidden)
+    #self.w1 = numpy.random.rand((28*28)+1, nhidden)
+
     self.w2 = numpy.random.rand(nhidden+1, 10)
 
     self.regularization = regularization
@@ -376,7 +379,7 @@ class Trainer:
     # Initialize the seed like you did on the previous exercise
     numpy.random.seed(self.seed)
 
-    machine = Machine(self.nhidden, self.regularization)
+    machine = Machine(self.nhidden, self.regularization, input_dim=X.shape[0])
 
     print 'Settings:'
     print '  * cost (J) = %g' % (machine.J(X, y),)
