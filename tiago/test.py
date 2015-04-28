@@ -39,6 +39,9 @@ def main():
   parser.add_argument('-p', '--plot', action='store_true', default=False,
     help="Visualizes confusion matrices graphically (it is off by default)")
 
+  parser.add_argument('-a', '--pca', action='store_true', default=False, help='Perform the PCA to the training data. The defaults values is %(default)s for the energy, which means NO PCA.')
+
+
   parser.add_argument('machine_file', default='mlp.hdf5',
       metavar='PATH', help="Path to the filename where to store the trained machine (defaults to %(default)s)")
 
@@ -73,7 +76,7 @@ def main():
 
   machine = answers.Machine()
   machine.load(f)
-  del f
+  #del f
 
   hidden = machine.w2.shape[0] - 1
   print("Number of inputs               : %d" % (28*28,))
@@ -81,6 +84,15 @@ def main():
   print("Number of outputs              : 10")
   print("Total number of free parameters: %d" % \
       ((28*28+1)*hidden+(hidden+1)*10))
+
+  if(args.pca > 0):
+    import pca
+    pca_machine = pca.Machine()
+    pca_machine.load(f)
+
+    X_train = pca_machine.project(X_train)
+    X_devel = pca_machine.project(X_devel)
+
 
 
   print("** FULL Train set results (%d examples):" % X_train.shape[1])
@@ -106,6 +118,9 @@ def main():
     X_test = X_test.astype(float)
     X_test /= 255.
     X_test -= X_mean
+
+    if(args.pca > 0):
+      X_test = pca_machine.project(X_test)
 
     print("** Test set results (%d examples):" % X_test.shape[1])
     print("  * cost (J) = %f" % machine.J(X_test, y_test))

@@ -30,34 +30,6 @@ __epilog__ = """\
 """ % {'prog': os.path.basename(sys.argv[0])}
 
 
-def do_pca(data, plot=False):
-  """
-  For the given input data, run the PCA algorithm
-
-  data
-     The input data
-  plot
-     Will plot the loading curve??
-  """
-
-  import pca
-  e,U = pca.pca_svd(data)
-  total_energy = numpy.sum(e)
-
-  if plot:
-    print("Plotting energy load curve...")
-    mpl.plot(range(len(e)), 100*numpy.cumsum(e)/total_energy)
-    mpl.title('Energy loading curve for M-NIST (training set)')
-    mpl.xlabel('Number of components')
-    mpl.ylabel('Energy (percentage)')
-    mpl.grid()
-    print("Close the plot window to continue.")
-    mpl.show()
-
-  return e,U
-
-
-
 def main():
 
   parser = argparse.ArgumentParser(description=__doc__, epilog=__epilog__,
@@ -126,12 +98,21 @@ def main():
   X_devel /= 255.
   X_devel -= X_mean
 
+  f = bob.io.base.HDF5File(args.machine_file, 'w')
+  f.set('X_mean', X_mean)
+
   #Check if will train the PCA
   if args.pca > 0.:
     import pca
-    e_pca,U_pca = do_pca(X_train, args.plot)
-    X_train = pca.project(X_train, U_pca[:,0:args.pca])
-    X_devel = pca.project(X_devel, U_pca[:,0:args.pca])
+
+    pca_trainer = pca.Trainer()
+    pca_machine = pca_trainer.train(X_train, args.pca) 
+    pca_machine.save(f)
+    
+
+    #e_pca,U_pca = do_pca(X_train, args.plot)
+    X_train = pca_machine.project(X_train)
+    X_devel = pca_machine.project(X_devel)
 
   import project as answers
 
@@ -149,10 +130,8 @@ def main():
   sys.stdout.write("** Training is over, took %.2f minute(s)\n" % (total/60.))
   sys.stdout.flush()
 
-  f = bob.io.base.HDF5File(args.machine_file, 'w')
-  f.set('X_mean', X_mean)
   machine.save(f)
-  del f
+  #del f
 
 
   print("** Development set results (%d examples):" % X_devel.shape[1])
