@@ -62,6 +62,9 @@ def as_mnist(filename, imwidth):
 
   images = []
   labels = []
+  
+  if filename.find("devel") != -1:
+    print("we're working with the development set: " + filename)
 
   for cls, data in enumerate(load(filename)):
       for example in data:

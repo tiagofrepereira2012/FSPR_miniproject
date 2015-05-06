@@ -9,7 +9,7 @@ course slides.
 
 N.B.: You should try to use the vectorized form in this exercise, or your
 program will be too slow. M-NIST has 60k input vectors for training, each with
-a dimensions 784 (28x28 images).
+a dimensions of nDims (Default: 784=28x28 images).
 """
 
 import numpy
@@ -18,7 +18,7 @@ import scipy.optimize
 class Machine:
   """Represents a Multi-Layer Perceptron Machine"""
 
-  def __init__(self, nhidden=2, regularization=0):
+  def __init__(self, nhidden=2, regularization=0, nDims=784):
     """Initializes the MLP with a number of inputs and outputs. Weights are
     initialized randomly with the specified seed.
 
@@ -29,6 +29,9 @@ class Machine:
 
     nhidden
       The number of units on the hidden layer
+      
+    nDims
+      The dimension of each input vector
 
     regularization
       A regularization parameter to be passed to the MLP.
@@ -39,7 +42,7 @@ class Machine:
     # In doubt, run the maths yourself.
     # z1 = w1^T * X
     # z2 = w2^T * a1
-    self.w1 = numpy.random.rand((28*28)+1, nhidden)
+    self.w1 = numpy.random.rand((nDims)+1, nhidden)
     self.w2 = numpy.random.rand(nhidden+1, 10)
 
     self.regularization = regularization
@@ -376,7 +379,7 @@ class Trainer:
     # Initialize the seed like you did on the previous exercise
     numpy.random.seed(self.seed)
 
-    machine = Machine(self.nhidden, self.regularization)
+    machine = Machine(self.nhidden, self.regularization, X.shape[0])
 
     print 'Settings:'
     print '  * cost (J) = %g' % (machine.J(X, y),)
