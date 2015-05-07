@@ -5,7 +5,7 @@ i=5
    i=`expr $i + 1`
 #done
 
-#i=0
+i=5
 #while [ "$i" -lt 5 ]    # this is loop1
 #do
   ./test_pca.py -t ./mlps/mlp$i.hdf5
