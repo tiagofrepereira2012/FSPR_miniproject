@@ -38,8 +38,13 @@ def main():
       help=argparse.SUPPRESS)
 
   parser.add_argument('-p', '--plot', action='store_true', default=False,
+<<<<<<< HEAD
       help="Turn-ON plotting **after** training (it is off by default)")
       
+=======
+    help="Visualizes confusion matrices graphically (it is off by default)")
+
+>>>>>>> 2b791d6dfd19b0e6b93d1fa73486fc7fc774fd2f
   parser.add_argument('machine_file', default='mlp.hdf5',
       metavar='PATH', help="Path to the filename where to store the trained machine (defaults to %(default)s)")
 

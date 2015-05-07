@@ -117,7 +117,6 @@ def main():
     X_train /= X_std  
   else:
     X_std = False
-    
   import project as answers
 
   trainer = answers.Trainer(args.seed, args.hidden, args.regularization,
