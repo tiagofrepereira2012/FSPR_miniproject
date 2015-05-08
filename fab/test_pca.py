@@ -38,7 +38,7 @@ def main():
       help=argparse.SUPPRESS)
 
   parser.add_argument('-p', '--plot', action='store_true', default=False,
-    help="Visualizes confusion matrices graphically (it is off by default)")
+      help="Visualizes confusion matrices graphically (it is off by default)")
 
   parser.add_argument('machine_file', default='mlp.hdf5',
       metavar='PATH', help="Path to the filename where to store the trained machine (defaults to %(default)s)")
@@ -67,11 +67,16 @@ def main():
 
   f = bob.io.base.HDF5File(args.machine_file, 'r')
   X_mean = f.read('X_mean')
+  X_std = f.read('X_std')
   pca_comps = f.read('pca_comps')
   X_train -= X_mean
   X_train = pca.project(X_train, pca_comps)
+  if X_std != False:
+    X_train /= X_std
   X_devel -= X_mean
   X_devel = pca.project(X_devel, pca_comps)
+  if X_std != False:
+    X_devel /= X_std
 
   import project as answers
 
@@ -111,6 +116,9 @@ def main():
     X_test /= 255.
     X_test -= X_mean
     X_test = pca.project(X_test, pca_comps)
+    
+    if X_std != False:
+      X_test /= X_std
 
     print("** Test set results (%d examples):" % X_test.shape[1])
     print("  * cost (J) = %f" % machine.J(X_test, y_test))

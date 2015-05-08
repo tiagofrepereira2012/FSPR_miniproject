@@ -34,6 +34,9 @@
 \usepackage{amssymb}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
 
 \title{\large{Fundamentals in statistical pattern recognition - Mini project}\\ \Large{\textbf{Pen-Digit Character Recognition}}}
 
@@ -193,5 +196,58 @@ The results presented for PCA-MCLR and PCA-LDA suggest that better recognizing p
 \# -e: Visualizes energy load curve graphically
 }
 \section{ Multi-Layer Perception and Principal Component Analysis}\label{sec:pca_mlp}
+
+This approach uses a combination of Multi-Layer Perception (MLP) with a preceding Principal Component Analysis (PCA, described in section \ref{sec:pca}) as illustrated in figure \ref{fig:mlp_pca}. Similar to the approach reported in section \ref{sec:pca_lda}, the PCA is used to reduce the dimensionality of the input data $\mathbf{X}$ and improves the distinguishability of the data fed to the MLP $\mathbf{X}'$.
+
+\begin{figure}
+	\centering
+		
+	\tikzset{
+		basic/.style  = {draw, text width=2cm, font=\sffamily, rectangle},
+		root/.style   = {basic, minimum height = 1.5cm, rounded corners=2pt, thin, align=center},
+	}
+	\begin{tikzpicture}[auto, node distance=3.5cm]
+	\node[] (in) {};
+	\node[root, right of = in, xshift=-1cm] (PCA) {PCA};
+	\node[root, right of = PCA] (MLP) {MLP};
+	\node[right of = MLP, xshift=-1cm] (out) {};
+	
+	\draw[->] (in) |- node[near end, above=1pt] {$\mathbf{X}$}  (PCA.west);
+	\draw[->] (PCA.east) |- node[near end, above=1pt] {$\mathbf{X}'$}  (MLP.west);
+	\draw[->] (MLP.east) |- node[near end, above=1pt] {$\mathbf{Y}$}  (out);
+	\end{tikzpicture}
+
+	\caption{\label{fig:mlp_pca} Block diagram of the MLP-PCA approach.}
+	
+\end{figure}
+	
+
+\begin{enumerate}
+\item \textbf{Best results} show CERs of:
+$$ \textrm{CER}_{\textrm{Train}}=15.1\% \qquad
+\textrm{CER}_{\textrm{Devel}}=27.0\% \qquad
+\textrm{CER}_{\textrm{Test}}=28.1\% $$
+
+\item \textbf{Better results} - \textit{but most probably overfitted} - show CERs of:
+$$ \textrm{CER}_{\textrm{Train}}=1.84\% \qquad
+\textrm{CER}_{\textrm{Devel}}=20.2\% \qquad
+\textrm{CER}_{\textrm{Test}}=21.0\% $$
+
+\end{enumerate}
+		
+\note{\\ 
+\$ git clone https://github.com/tiagofrepereira2012/FSPR\_miniproject . \\
+\$ cd fab \\
+\$ ./run\_stable.sh \\
+\$ ./run\_overfit.sh 
+}
+
+\vspace{1cm}
+A few remarks to this approach:
+
+\begin{itemize}
+	\item As favourable for MLPs, the input data $\mathbf{X}'$ was normalized with the standard deviation of each individual feature. However, this modification did not lead to an improvement of the results and was therefore rejected.
+	\item As the second approach uses 107 principal components and 67 neurons we have 7916 free parameters with 3397 feature vectors in the training set, which is a clear case of overfitting which should better be avoided.
+\end{itemize}
 
 \end{document}

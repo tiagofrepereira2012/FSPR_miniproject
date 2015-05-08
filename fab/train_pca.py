@@ -43,6 +43,8 @@ def main():
 
   parser.add_argument('-p', '--plot', action='store_true', default=False,
       help="Turn-ON plotting **after** training (it is off by default)")
+      
+  parser.add_argument('-m', '--normalize', action='store_true', default=False, help="Turn-ON normalization of data (it is off by default)")
 
   parser.add_argument('-l', '--regularization', type=float, default=0.,
       metavar='FLOAT', help="Regularization parameter (defaults to %(default)s - i.e. no reguralization)")
@@ -87,6 +89,7 @@ def main():
   X_train /= 255.
   X_mean   = X_train.mean(axis=1).reshape(-1,1)
   #X_std   = X_train.std(axis=1, ddof=1).reshape(-1,1)
+  #X_std[X_std == 0] = 1
   #X_train = (X_train - X_mean) / X_std
   X_train -= X_mean
 
@@ -108,9 +111,12 @@ def main():
   print("With %d components (your choice), you preserve %.2f%% of the energy" % (args.components, 100*sum(e[:args.components])/total_energy))
 
   pca_comps = U[:,0:args.components];
-  #import pdb; pdb.set_trace()
   X_train = pca.project(X_train, pca_comps)
-
+  X_std = X_train.std(axis = 1, ddof = 1).reshape(-1,1)
+  if args.normalize:
+    X_train /= X_std  
+  else:
+    X_std = False
   import project as answers
 
   trainer = answers.Trainer(args.seed, args.hidden, args.regularization,
@@ -129,6 +135,7 @@ def main():
   f = bob.io.base.HDF5File(args.machine_file, 'w')
   f.set('X_mean', X_mean)
   f.set('pca_comps', pca_comps)
+  f.set('X_std', X_std)
   machine.save(f)
   del f
 
@@ -136,6 +143,8 @@ def main():
   X_devel /= 255.
   X_devel -= X_mean
   X_devel = pca.project(X_devel, pca_comps)
+  if args.normalize:
+    X_devel /= X_std
 
   print("** Development set results (%d examples):" % X_devel.shape[1])
   print("  * cost (J) = %f" % machine.J(X_devel, y_devel))
