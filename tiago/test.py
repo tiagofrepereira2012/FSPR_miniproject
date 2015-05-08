@@ -109,6 +109,7 @@ def main():
 
     print("Loading Pen-digits (writer-dependent) test set...")
     X_test, labels_test = data.as_mnist('data/test-dependent.hdf5', 28)
+    #X_test, labels_test = data.as_mnist('data/test-independent.hdf5', 28)
 
     # creates a matrix for the MLP output in which only the correct label
     # position is set with +1.

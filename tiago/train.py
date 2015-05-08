@@ -62,11 +62,16 @@ def main():
   ##### START of program
 
   print("Pen-digit Classification using an MLP with tanh activation")
-  print("Number of inputs               : %d" % (28*28,))
+  if args.pca > 0:
+    n_inputs = args.pca
+  else:
+    n_inputs = 28 * 28
+
+  print("Number of inputs               : %d" % (n_inputs,))
   print("Number of hidden units         : %d" % (args.hidden,))
   print("Number of outputs              : 10")
   print("Total number of free parameters: %d" % \
-      ((28*28+1)*args.hidden+(args.hidden+1)*10))
+      ((n_inputs+1)*args.hidden+(args.hidden+1)*10))
 
 
   print("Loading Pen-digit training set...")
