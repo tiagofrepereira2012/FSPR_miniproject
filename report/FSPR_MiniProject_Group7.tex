@@ -144,7 +144,9 @@ Note that with 200 principal directions,  97.89 \% of data variability is preser
 
 Compared with the the baseline solution (Section~\ref{sec:description}), significant improvement is achieved using PCA-MCLR method.
 
-\note{\\ \$ cd  {MiniProj\_MCLR\_PCA} \# change into directory for PCA-MCLR \\
+\note{\\ 
+	\$ git clone https://github.com/tiagofrepereira2012/FSPR\_miniproject . \\
+	\$ cd marija/MiniProj\_MCLR\_PCA/ \\
 \$ ./mclr\_train.py zero -c 200 \\
 \$ ./mclr\_train.py one -c 200 \\
 \$ ./mclr\_train.py two -c 200 \\
@@ -187,7 +189,9 @@ The confusion matrix for training, development and testing data set is shown in 
 
 The results presented for PCA-MCLR and PCA-LDA suggest that better recognizing performance is achieved using the former method.
 
-\note{\\ \$ cd  {MiniProj\_PCA\_LDA} \# change into directory for PCA-LDA \\
+\note{\\	
+	\$ git clone https://github.com/tiagofrepereira2012/FSPR\_miniproject . \\
+	\$ cd marija/MiniProj\_PCA\_LDA/ \\
 \$ ./pca\_lda.py -c 200 -l 9 -t -p -e\\\\
 \# -c: Number of principal components to keep\\
 \# -l: Number of LDA components to keep\\
@@ -197,7 +201,7 @@ The results presented for PCA-MCLR and PCA-LDA suggest that better recognizing p
 }
 \section{ Multi-Layer Perception and Principal Component Analysis}\label{sec:pca_mlp}
 
-This approach uses a combination of Multi-Layer Perception (MLP) with a preceding Principal Component Analysis (PCA, described in section \ref{sec:pca}) as illustrated in figure \ref{fig:mlp_pca}. Similar to the approach reported in section \ref{sec:pca_lda}, the PCA is used to reduce the dimensionality of the input data $\mathbf{X}$ and improves the distinguishability of the data fed to the MLP $\mathbf{X}'$.
+This approach uses a combination of Multi-Layer Perception (MLP) with a preceding Principal Component Analysis (PCA, described in section \ref{sec:pca}) as illustrated in figure \ref{fig:mlp_pca}. Similar to the approach reported in section \ref{sec:pca_lda}, the PCA is used to reduce the dimensionality of the input data $\mathbf{X}$ and thus improves the distinguishability of the data fed to the MLP $\mathbf{X}'$.
 
 \begin{figure}
 	\centering
@@ -223,31 +227,38 @@ This approach uses a combination of Multi-Layer Perception (MLP) with a precedin
 	
 
 \begin{enumerate}
-\item \textbf{Best results} show CERs of:
-$$ \textrm{CER}_{\textrm{Train}}=15.1\% \qquad
-\textrm{CER}_{\textrm{Devel}}=27.0\% \qquad
-\textrm{CER}_{\textrm{Test}}=28.1\% $$
+\item \textbf{Best results} with stable behaviour over different seeds show CERs of:
+$$ \textrm{CER}_{\textrm{Train}} \approx 65\% \qquad
+\textrm{CER}_{\textrm{Devel}}\approx 66\%  \qquad
+\textrm{CER}_{\textrm{Test}}\approx 67\%  $$
 
-\item \textbf{Better results} - \textit{but most probably overfitted} - show CERs of:
+\note{\\ 
+	\$ git clone https://github.com/tiagofrepereira2012/FSPR\_miniproject . \\
+	\$ cd tiago \\
+\$./run\_stable.sh
+}
+
+\item \textbf{Better results} - \textit{however unstable over different seeds and most probably overfitted} - show CERs of (for one specific seed):
 $$ \textrm{CER}_{\textrm{Train}}=1.84\% \qquad
 \textrm{CER}_{\textrm{Devel}}=20.2\% \qquad
 \textrm{CER}_{\textrm{Test}}=21.0\% $$
 
-\end{enumerate}
-		
+As this approach uses 107 principal components and 67 neurons we have 7916 free parameters with 3397 feature vectors in the training set, which is a potential case of overfitting which should better be avoided.
+
 \note{\\ 
-\$ git clone https://github.com/tiagofrepereira2012/FSPR\_miniproject . \\
-\$ cd fab \\
-\$ ./run\_stable.sh \\
-\$ ./run\_overfit.sh 
+	\$ git clone https://github.com/tiagofrepereira2012/FSPR\_miniproject . \\
+	\$ cd fab \\
+	\$ ./run\_overfit.sh 
 }
 
+\end{enumerate}
+		
+
 \vspace{1cm}
-A few remarks to this approach:
+A remark to this approach:
 
 \begin{itemize}
 	\item As favourable for MLPs, the input data $\mathbf{X}'$ was normalized with the standard deviation of each individual feature. However, this modification did not lead to an improvement of the results and was therefore rejected.
-	\item As the second approach uses 107 principal components and 67 neurons we have 7916 free parameters with 3397 feature vectors in the training set, which is a clear case of overfitting which should better be avoided.
 \end{itemize}
 
 \end{document}
